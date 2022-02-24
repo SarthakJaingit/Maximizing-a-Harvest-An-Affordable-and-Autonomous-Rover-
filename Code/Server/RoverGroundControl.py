@@ -7,12 +7,12 @@ import time
 servo_origin = 90
 check_constants = [10, 45, 120]
 
-def side_scan(pitstop_angle, direction):
+def side_scan(pwm, pitstop_angle, direction):
     if direction == 'l':
         for period in range(servo_origin, 9, -1):
             pwm.setServoPwm('0',period)
             if period in check_constants and period!= 90:
-                upward_check(2) # Can change checking_count here
+                upward_check(pwm, 2) # Can change checking_count here
             else:
                 time.sleep(0.01)
         for period in range(0, servo_origin + 1, 1):
@@ -23,17 +23,17 @@ def side_scan(pitstop_angle, direction):
         for period in range(servo_origin, 121, 1):
             pwm.setServoPwm('0',period)
             if period in check_constants and period!= 90:
-                upward_check(2) # Can change checking_count here
+                upward_check(pwm, 2) # Can change checking_count here
             else:
                 time.sleep(0.01)
-        for period in range(180, servo_origin-1, -1):
+        for period in range(121, servo_origin-1, -1):
             pwm.setServoPwm('0',period)
             time.sleep(0.01)
     else:
         raise ValueError("Wrong input for direction")
 
 
-def upward_check(checking_count):
+def upward_check(pwm, checking_count):
     assert checking_count > 0 and checking_count <=3
     maximum_upward_angle = 120
     turn_angle = (maximum_upward_angle - servo_origin) / checking_count
@@ -56,8 +56,8 @@ if __name__ == "__main__":
     pwm=Servo()
 
     pitstop_angle = 40
-    side_scan(pitstop_angle, 'l')
-    side_scan(pitstop_angle, 'r')
+    side_scan(pwm, pitstop_angle, 'l')
+    side_scan(pwm, pitstop_angle, 'r')
 
     # pwm.setServoPwm('1',90)
     # for period in range(90, 130, 1):
